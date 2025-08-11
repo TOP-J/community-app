@@ -1,0 +1,14 @@
+**__pycache__/
+**.pyc
+**.env
+**.log
+**.idea/
+**.vscode/
+**.expo/
+backend/media/
+backend/venv/
+frontend/python-client/
+frontend/community/app-example
+frontend/community/.git
+**/node_modules/
+frontend/community/.gitignore

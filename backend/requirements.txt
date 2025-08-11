@@ -1,0 +1,6 @@
+django
+spycopg3
+python-dotenv
+pillow
+djangorestframework
+djoser
