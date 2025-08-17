@@ -1,5 +1,5 @@
 django
-spycopg
+psycopg
 python-dotenv
 pillow
 djangorestframework
