@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -8,17 +8,17 @@ import {
   StatusBar,
   Platform,
   ActivityIndicator,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { CircleUserRound } from 'lucide-react-native';
-import { ProfileSidebar } from '../../components/ui/profilesidebar';
-import SearchBar from '../../components/ui/searchbar';
-import { Post } from '@/components/ui/post';
-import * as SecureStore from 'expo-secure-store';
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { CircleUserRound } from "lucide-react-native";
+import { ProfileSidebar } from "../../components/ui/profilesidebar";
+import SearchBar from "../../components/ui/searchbar";
+import { Post } from "@/components/ui/post";
+import * as SecureStore from "expo-secure-store";
 
 export default function HomeScreen() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [searchText, setSearchText] = useState('');
+  const [searchText, setSearchText] = useState("");
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -28,33 +28,33 @@ export default function HomeScreen() {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const token = await SecureStore.getItemAsync('auth_token');
+        const token = await SecureStore.getItemAsync("auth_token");
         if (!token) {
-          console.warn('No auth token found');
+          console.warn("No auth token found");
           return;
         }
 
-        const response = await fetch('http://192.168.8.102:8000/api/posts/', {
+        const response = await fetch("http://192.168.8.102:8000/api/posts/", {
           headers: {
             Authorization: `Token ${token}`,
-            Accept: 'application/json',
+            Accept: "application/json",
           },
         });
 
         if (!response.ok) {
-          console.error('Failed to fetch posts:', response.status);
+          console.error("Failed to fetch posts:", response.status);
           return;
         }
 
         const data = await response.json();
         const rawPosts = Array.isArray(data) ? data : data.results || [];
-        const globalPosts = rawPosts.filter(p => !p.space);
+        const globalPosts = rawPosts.filter((p) => !p.space);
         const sorted = globalPosts.sort(
           (a, b) => new Date(b.created_at) - new Date(a.created_at)
         );
         setPosts(sorted);
       } catch (error) {
-        console.error('Error fetching posts:', error);
+        console.error("Error fetching posts:", error);
       } finally {
         setLoading(false);
       }
@@ -65,23 +65,23 @@ export default function HomeScreen() {
 
   const menuItems = [
     {
-      label: 'Account',
+      label: "Account",
       onPress: () => {
-        console.log('Account pressed');
+        console.log("Account pressed");
         closeSidebar();
       },
     },
     {
-      label: 'Settings',
+      label: "Settings",
       onPress: () => {
-        console.log('Settings pressed');
+        console.log("Settings pressed");
         closeSidebar();
       },
     },
     {
-      label: 'Logout',
+      label: "Logout",
       onPress: () => {
-        console.log('Logout pressed');
+        console.log("Logout pressed");
         closeSidebar();
       },
     },
@@ -100,15 +100,19 @@ export default function HomeScreen() {
       <SearchBar value={searchText} onChangeText={setSearchText} />
 
       {loading ? (
-        <ActivityIndicator size="large" color="green" style={{ marginTop: 20 }} />
+        <ActivityIndicator
+          size="large"
+          color="green"
+          style={{ marginTop: 20 }}
+        />
       ) : (
         <FlatList
           data={posts}
-          keyExtractor={item => item.id.toString()}
+          keyExtractor={(item) => item.id.toString()}
           contentContainerStyle={styles.scrollContent}
           renderItem={({ item }) => <Post post={item} />}
           ListEmptyComponent={
-            <Text style={{ textAlign: 'center', marginTop: 40 }}>
+            <Text style={{ textAlign: "center", marginTop: 40 }}>
               No posts found.
             </Text>
           }
@@ -128,16 +132,16 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: '100%',
-    backgroundColor: '#fff',
+    width: "100%",
+    backgroundColor: "#fff",
   },
   scrollContent: {
     padding: 10,
     paddingBottom: 80,
   },
   headerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 10,
     paddingHorizontal: 10,
     paddingBottom: 10,
@@ -147,6 +151,6 @@ const styles = StyleSheet.create({
   },
   feedTitle: {
     fontSize: 30,
-    fontWeight: '500',
+    fontWeight: "500",
   },
 });

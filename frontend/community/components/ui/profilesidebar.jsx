@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -8,13 +8,38 @@ import {
   Dimensions,
 } from 'react-native';
 import { X } from 'lucide-react-native';
+import * as SecureStore from 'expo-secure-store';
+import { useNavigation } from '@react-navigation/native';
 
 const { width } = Dimensions.get('window');
 
-export function ProfileSidebar({ isOpen, onClose, title, menuItems, children }) {
+export function ProfileSidebar({ isOpen, onClose, menuItems = [], children }) {
   const sidebarTranslateX = useRef(new Animated.Value(-width)).current;
   const overlayOpacity = useRef(new Animated.Value(0)).current;
+  const [userName, setUserName] = useState("My Profile");
+  const navigation = useNavigation();
 
+  // Fetch logged-in user name
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const token = await SecureStore.getItemAsync('auth_token');
+        if (!token) return;
+        const res = await fetch('http://192.168.8.102:8000/api/users/me/', {
+          headers: { Authorization: `Token ${token}` },
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setUserName(data.full_name || data.username || "My Profile");
+        }
+      } catch (err) {
+        console.error('Failed to fetch user:', err);
+      }
+    };
+    fetchUser();
+  }, []);
+
+  // Animate sidebar open/close
   useEffect(() => {
     if (isOpen) {
       Animated.parallel([
@@ -45,9 +70,24 @@ export function ProfileSidebar({ isOpen, onClose, title, menuItems, children }) 
     }
   }, [isOpen]);
 
+  // Logout handler
+  const handleLogout = async () => {
+    try {
+      const token = await SecureStore.getItemAsync('auth_token');
+      if (!token) return;
+      await fetch('http://192.168.8.102:8000/auth/token/logout/', {
+        method: 'POST',
+        headers: { Authorization: `Token ${token}` },
+      });
+      await SecureStore.deleteItemAsync('auth_token');
+      navigation.reset({ index: 0, routes: [{ name: 'Login' }] });
+    } catch (err) {
+      console.error('Logout failed:', err);
+    }
+  };
+
   return (
     <>
-      {/* Sidebar Component */}
       <Animated.View
         style={[
           styles.sidebar,
@@ -55,28 +95,42 @@ export function ProfileSidebar({ isOpen, onClose, title, menuItems, children }) 
         ]}
       >
         <View style={styles.sidebarHeader}>
-          <Text style={styles.sidebarTitle}>{title}</Text>
+          <Text style={styles.sidebarTitle}>{userName}</Text>
           <TouchableOpacity onPress={onClose} style={styles.closeButton}>
             <X size={24} color="#fff" />
           </TouchableOpacity>
         </View>
         <View style={styles.sidebarContent}>
-          {menuItems.map((item, index) => (
-            <TouchableOpacity key={index} style={styles.menuItem} onPress={item.onPress}>
-              <Text style={styles.menuItemText}>{item.label}</Text>
-            </TouchableOpacity>
-          ))}
+          {menuItems.map((item, index) => {
+            // Override logout behavior
+            if (item.label.toLowerCase() === 'logout') {
+              return (
+                <TouchableOpacity
+                  key={index}
+                  style={styles.menuItem}
+                  onPress={handleLogout}
+                >
+                  <Text style={styles.menuItemText}>{item.label}</Text>
+                </TouchableOpacity>
+              );
+            }
+            return (
+              <TouchableOpacity
+                key={index}
+                style={styles.menuItem}
+                onPress={item.onPress}
+              >
+                <Text style={styles.menuItemText}>{item.label}</Text>
+              </TouchableOpacity>
+            );
+          })}
           {children}
         </View>
       </Animated.View>
 
-      {/* Overlay Component */}
       <Animated.View
         pointerEvents={isOpen ? 'auto' : 'none'}
-        style={[
-          styles.overlay,
-          { opacity: overlayOpacity },
-        ]}
+        style={[styles.overlay, { opacity: overlayOpacity }]}
       >
         <TouchableOpacity style={styles.overlayTouchable} onPress={onClose} />
       </Animated.View>
@@ -94,9 +148,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'black',
     zIndex: 10,
   },
-  overlayTouchable: {
-    flex: 1,
-  },
+  overlayTouchable: { flex: 1 },
   sidebar: {
     position: 'absolute',
     top: 0,
@@ -126,22 +178,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#fff',
   },
-  closeButton: {
-    padding: 5,
-  },
-  sidebarContent: {
-    flex: 1,
-    paddingTop: 20,
-  },
+  closeButton: { padding: 5 },
+  sidebarContent: { flex: 1, paddingTop: 20 },
   menuItem: {
     paddingVertical: 15,
     paddingHorizontal: 20,
     borderBottomWidth: 1,
     borderBottomColor: 'rgba(255,255,255,0.05)',
   },
-  menuItemText: {
-    fontSize: 18,
-    color: '#fff',
-    fontWeight: '500',
-  },
+  menuItemText: { fontSize: 18, color: '#fff', fontWeight: '500' },
 });

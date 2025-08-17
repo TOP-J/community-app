@@ -1,6 +1,6 @@
 // components/ui/spaceModalSelector.jsx
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -10,8 +10,8 @@ import {
   Image,
   StyleSheet,
   Pressable,
-} from 'react-native';
-import * as SecureStore from 'expo-secure-store';
+} from "react-native";
+import * as SecureStore from "expo-secure-store";
 
 export default function SpaceModalSelector({ selected, onChange }) {
   const [spaces, setSpaces] = useState([]);
@@ -21,19 +21,22 @@ export default function SpaceModalSelector({ selected, onChange }) {
   useEffect(() => {
     const fetchSpaces = async () => {
       try {
-        const token = await SecureStore.getItemAsync('auth_token');
+        const token = await SecureStore.getItemAsync("auth_token");
         if (!token) return;
 
-        const res = await fetch('http://192.168.8.102:8000/api/spaces/', {
+        const res = await fetch("http://192.168.8.102:8000/api/spaces/", {
           headers: { Authorization: `Token ${token}` },
         });
 
         const allSpaces = await res.json();
         setSpaces(allSpaces);
 
-        const myRes = await fetch('http://192.168.8.102:8000/api/spaces/my_space/', {
-          headers: { Authorization: `Token ${token}` },
-        });
+        const myRes = await fetch(
+          "http://192.168.8.102:8000/api/spaces/my_space/",
+          {
+            headers: { Authorization: `Token ${token}` },
+          }
+        );
 
         if (myRes.ok) {
           const mySpace = await myRes.json();
@@ -41,14 +44,14 @@ export default function SpaceModalSelector({ selected, onChange }) {
           onChange(mySpace.id, true); // fallback only
         }
       } catch (error) {
-        console.error('Error fetching spaces:', error);
+        console.error("Error fetching spaces:", error);
       }
     };
 
     fetchSpaces();
   }, []);
 
-  const current = spaces.find(space => space.id === selected);
+  const current = spaces.find((space) => space.id === selected);
 
   return (
     <View style={styles.container}>
@@ -59,7 +62,7 @@ export default function SpaceModalSelector({ selected, onChange }) {
         onPress={() => setModalVisible(true)}
       >
         <Text style={styles.selectedText}>
-          {current ? current.name : 'Tap to select a space'}
+          {current ? current.name : "Tap to select a space"}
         </Text>
       </TouchableOpacity>
 
@@ -77,7 +80,7 @@ export default function SpaceModalSelector({ selected, onChange }) {
             <Text style={styles.modalHeader}>Choose a space</Text>
             <FlatList
               data={spaces}
-              keyExtractor={item => item.id.toString()}
+              keyExtractor={(item) => item.id.toString()}
               renderItem={({ item }) => {
                 const isMySpace = item.id === mySpaceId;
                 return (
@@ -88,17 +91,16 @@ export default function SpaceModalSelector({ selected, onChange }) {
                       setModalVisible(false);
                     }}
                   >
-                    
                     <Image
                       source={
                         item.space_profile_url
                           ? { uri: item.space_profile_url }
-                          : require('../../assets/images/default_space.png')
+                          : require("../../assets/images/default_space.png")
                       }
                       style={styles.icon}
                     />
                     <Text style={styles.itemText}>
-                      {item.name} {isMySpace ? '⭐' : ''}
+                      {item.name} {isMySpace ? "⭐" : ""}
                     </Text>
                   </TouchableOpacity>
                 );
@@ -114,52 +116,52 @@ export default function SpaceModalSelector({ selected, onChange }) {
 const styles = StyleSheet.create({
   container: { marginBottom: 16 },
   label: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 6,
-    color: '#222',
+    color: "#222",
   },
   selector: {
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderRadius: 8,
     padding: 14,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   selectedText: {
     fontSize: 16,
-    color: '#000',
+    color: "#000",
   },
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.3)',
-    justifyContent: 'flex-end',
+    backgroundColor: "rgba(0,0,0,0.3)",
+    justifyContent: "flex-end",
   },
   modal: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderTopLeftRadius: 12,
     borderTopRightRadius: 12,
     padding: 16,
-    maxHeight: '60%',
+    maxHeight: "60%",
   },
   modalHeader: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 12,
   },
   item: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingVertical: 12,
   },
   itemText: {
     marginLeft: 12,
     fontSize: 16,
-    color: '#000',
+    color: "#000",
   },
   icon: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#eee',
+    backgroundColor: "#eee",
   },
 });

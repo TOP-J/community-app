@@ -12,7 +12,7 @@ import * as SecureStore from "expo-secure-store";
 
 import { ProfileSidebar } from "../../components/ui/profilesidebar";
 import SearchBar from "../../components/ui/searchbar";
-import { CircleUserRound } from "lucide-react-native"; 
+import { CircleUserRound } from "lucide-react-native";
 import { SpaceHeader } from "../../components/ui/spaceheader";
 import SpaceCategoryRow from "../../components/ui/spacecategoryrow";
 
@@ -58,9 +58,27 @@ export default function SpaceScreen({ navigation }) {
   }, []);
 
   const menuItems = [
-    { label: "Account", onPress: () => { console.log("Account pressed"); closeSidebar(); } },
-    { label: "Settings", onPress: () => { console.log("Settings pressed"); closeSidebar(); } },
-    { label: "Logout", onPress: () => { console.log("Logout pressed"); closeSidebar(); } },
+    {
+      label: "Account",
+      onPress: () => {
+        console.log("Account pressed");
+        closeSidebar();
+      },
+    },
+    {
+      label: "Settings",
+      onPress: () => {
+        console.log("Settings pressed");
+        closeSidebar();
+      },
+    },
+    {
+      label: "Logout",
+      onPress: () => {
+        console.log("Logout pressed");
+        closeSidebar();
+      },
+    },
   ];
 
   return (
@@ -75,7 +93,14 @@ export default function SpaceScreen({ navigation }) {
         </View>
         <SearchBar value={searchText} onChangeText={setSearchText} />
         <SpaceHeader />
-        <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 5, paddingHorizontal: 10 }}>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            marginTop: 5,
+            paddingHorizontal: 10,
+          }}
+        >
           <Text style={styles.discoverSpaces}>Discover Spaces</Text>
           <TouchableOpacity onPress={() => navigation.navigate("Spaces")}>
             <Text style={styles.viewAll}>view all</Text>

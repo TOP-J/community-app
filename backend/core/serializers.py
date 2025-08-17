@@ -108,19 +108,23 @@ class FeedPostSerializer(serializers.ModelSerializer):
 
 class CommentSerializer(serializers.ModelSerializer):
     author = SimpleUserSerializer(read_only=True)
-    post = serializers.PrimaryKeyRelatedField(read_only=True)
-    question = serializers.PrimaryKeyRelatedField(read_only=True)
+    post = serializers.PrimaryKeyRelatedField(
+        queryset=FeedPost.objects.all(),
+        write_only=True
+    )
     upvote_count = serializers.SerializerMethodField()
     is_upvoted = serializers.SerializerMethodField()
-    created_at = serializers.DateTimeField(format="%Y-%m-%dT%H:%M:%S.%fZ", read_only=True)
+    created_at = serializers.DateTimeField(
+        format="%Y-%m-%dT%H:%M:%S.%fZ", read_only=True
+    )
 
     class Meta:
         model = Comment
         fields = [
             'id', 'author', 'content', 'created_at', 'updated_at',
-            'post', 'question', 'upvote_count', 'is_upvoted'
+            'post', 'upvote_count', 'is_upvoted'
         ]
-        read_only_fields = ['author', 'post', 'question', 'created_at']
+        read_only_fields = ['author', 'created_at', 'updated_at']
 
     def get_upvote_count(self, obj):
         return obj.upvoters.count()

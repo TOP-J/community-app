@@ -96,9 +96,12 @@ export function InteractionBar({
       });
 
       if (res.ok) {
-        Alert.alert("Concern raised", "Your concern has been sent to moderators.");
+        Alert.alert(
+          "Concern raised",
+          "Your concern has been sent to moderators."
+        );
       } else {
-        Alert.alert("Failed", await res.text() || "Unable to raise concern.");
+        Alert.alert("Failed", (await res.text()) || "Unable to raise concern.");
       }
     } catch (err) {
       console.error("Raise concern error:", err);
@@ -123,8 +126,12 @@ export function InteractionBar({
     <View style={{ flex: 1 }}>
       {/* Likes & Shares count */}
       <View style={styles.top}>
-        <Text>{likes} interaction{likes !== 1 ? "s" : ""}</Text>
-        <Text>{shares} share{shares !== 1 ? "s" : ""}</Text>
+        <Text>
+          {likes} interaction{likes !== 1 ? "s" : ""}
+        </Text>
+        <Text>
+          {shares} share{shares !== 1 ? "s" : ""}
+        </Text>
       </View>
 
       {/* Action buttons */}
@@ -136,7 +143,10 @@ export function InteractionBar({
           style={styles.icon}
           onPress={() => setShowComments((prev) => !prev)}
         >
-          <MessageSquareText size={20} color={showComments ? "#247b3b" : "#555"} />
+          <MessageSquareText
+            size={20}
+            color={showComments ? "#247b3b" : "#555"}
+          />
         </TouchableOpacity>
         <TouchableOpacity style={styles.icon} onPress={handleShare}>
           <SendHorizontal size={20} color={shared ? "#247b3b" : "#555"} />
