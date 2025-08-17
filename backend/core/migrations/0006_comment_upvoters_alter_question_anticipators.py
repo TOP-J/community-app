@@ -7,19 +7,25 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('core', '0005_question_anticipators_alter_answer_upvoters'),
+        ("core", "0005_question_anticipators_alter_answer_upvoters"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='comment',
-            name='upvoters',
-            field=models.ManyToManyField(blank=True, related_name='upvoted_comments', to=settings.AUTH_USER_MODEL),
+            model_name="comment",
+            name="upvoters",
+            field=models.ManyToManyField(
+                blank=True, related_name="upvoted_comments", to=settings.AUTH_USER_MODEL
+            ),
         ),
         migrations.AlterField(
-            model_name='question',
-            name='anticipators',
-            field=models.ManyToManyField(blank=True, related_name='anticipated_questions', to=settings.AUTH_USER_MODEL),
+            model_name="question",
+            name="anticipators",
+            field=models.ManyToManyField(
+                blank=True,
+                related_name="anticipated_questions",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
     ]

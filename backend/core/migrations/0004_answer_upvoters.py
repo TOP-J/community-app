@@ -7,14 +7,16 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('core', '0003_feedpostshare'),
+        ("core", "0003_feedpostshare"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='answer',
-            name='upvoters',
-            field=models.ManyToManyField(blank=True, related_name='upvoted_answers', to=settings.AUTH_USER_MODEL),
+            model_name="answer",
+            name="upvoters",
+            field=models.ManyToManyField(
+                blank=True, related_name="upvoted_answers", to=settings.AUTH_USER_MODEL
+            ),
         ),
     ]

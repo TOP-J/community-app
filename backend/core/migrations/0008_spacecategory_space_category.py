@@ -7,24 +7,49 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('core', '0007_space_space_profile'),
+        ("core", "0007_space_space_profile"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='SpaceCategory',
+            name="SpaceCategory",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(help_text='Category name.', max_length=100, unique=True)),
-                ('description', models.TextField(blank=True, help_text='Description of the category.')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "name",
+                    models.CharField(
+                        help_text="Category name.", max_length=100, unique=True
+                    ),
+                ),
+                (
+                    "description",
+                    models.TextField(
+                        blank=True, help_text="Description of the category."
+                    ),
+                ),
             ],
             options={
-                'verbose_name_plural': 'Space Categories',
+                "verbose_name_plural": "Space Categories",
             },
         ),
         migrations.AddField(
-            model_name='space',
-            name='category',
-            field=models.ForeignKey(blank=True, help_text='Category of this space.', null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='spaces', to='core.spacecategory'),
+            model_name="space",
+            name="category",
+            field=models.ForeignKey(
+                blank=True,
+                help_text="Category of this space.",
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="spaces",
+                to="core.spacecategory",
+            ),
         ),
     ]

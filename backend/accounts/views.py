@@ -4,13 +4,17 @@ from rest_framework.response import Response
 from .models import Profile
 from .serializers import ProfileSerializer
 
+
 class ProfileDetailView(generics.RetrieveUpdateAPIView):
     """
     API endpoint for retrieving and updating the user's own profile.
     """
+
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
-    permission_classes = [permissions.IsAuthenticated] # Only authenticated users can access their profile
+    permission_classes = [
+        permissions.IsAuthenticated
+    ]  # Only authenticated users can access their profile
 
     def get_object(self):
         """

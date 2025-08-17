@@ -6,13 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('accounts', '0002_profile_gender'),
+        ("accounts", "0002_profile_gender"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='profile',
-            name='school_name',
-            field=models.CharField(blank=True, help_text='School or institution name', max_length=100, null=True),
+            model_name="profile",
+            name="school_name",
+            field=models.CharField(
+                blank=True,
+                help_text="School or institution name",
+                max_length=100,
+                null=True,
+            ),
         ),
     ]

@@ -15,205 +15,680 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Conversation',
+            name="Conversation",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(blank=True, help_text='Name of the conversation (e.g., for group chats).', max_length=255, null=True)),
-                ('is_group_chat', models.BooleanField(default=False, help_text='True if this is a group chat, False for a direct (1-on-1) message.')),
-                ('created_at', models.DateTimeField(auto_now_add=True, help_text='Timestamp when the conversation was created.')),
-                ('updated_at', models.DateTimeField(auto_now=True, help_text='Timestamp when the conversation was last updated (e.g., new message).')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "name",
+                    models.CharField(
+                        blank=True,
+                        help_text="Name of the conversation (e.g., for group chats).",
+                        max_length=255,
+                        null=True,
+                    ),
+                ),
+                (
+                    "is_group_chat",
+                    models.BooleanField(
+                        default=False,
+                        help_text="True if this is a group chat, False for a direct (1-on-1) message.",
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        help_text="Timestamp when the conversation was created.",
+                    ),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(
+                        auto_now=True,
+                        help_text="Timestamp when the conversation was last updated (e.g., new message).",
+                    ),
+                ),
             ],
             options={
-                'ordering': ['-updated_at'],
+                "ordering": ["-updated_at"],
             },
         ),
         migrations.CreateModel(
-            name='ConversationParticipant',
+            name="ConversationParticipant",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('joined_at', models.DateTimeField(auto_now_add=True, help_text='Timestamp when the user joined the conversation.')),
-                ('conversation', models.ForeignKey(help_text='The conversation this participant belongs to.', on_delete=django.db.models.deletion.CASCADE, related_name='participant_links', to='core.conversation')),
-                ('user', models.ForeignKey(help_text='The user participating in this conversation.', on_delete=django.db.models.deletion.CASCADE, related_name='conversation_links', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "joined_at",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        help_text="Timestamp when the user joined the conversation.",
+                    ),
+                ),
+                (
+                    "conversation",
+                    models.ForeignKey(
+                        help_text="The conversation this participant belongs to.",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="participant_links",
+                        to="core.conversation",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        help_text="The user participating in this conversation.",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="conversation_links",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Conversation Participant',
-                'verbose_name_plural': 'Conversation Participants',
-            },
-        ),
-        migrations.AddField(
-            model_name='conversation',
-            name='participants',
-            field=models.ManyToManyField(help_text='Users participating in this conversation.', related_name='conversations', through='core.ConversationParticipant', to=settings.AUTH_USER_MODEL),
-        ),
-        migrations.CreateModel(
-            name='FeedPost',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(help_text='Title of the feed post.', max_length=255)),
-                ('content', models.TextField(help_text='Content of the feed post.')),
-                ('created_at', models.DateTimeField(auto_now_add=True, help_text='Timestamp when the post was created.')),
-                ('updated_at', models.DateTimeField(auto_now=True, help_text='Timestamp when the post was last updated.')),
-                ('author', models.ForeignKey(help_text='The user (admin or teacher) who created this post.', limit_choices_to={'user_type__in': ['admin', 'teacher']}, on_delete=django.db.models.deletion.CASCADE, related_name='authored_posts', to=settings.AUTH_USER_MODEL)),
-            ],
-            options={
-                'ordering': ['-created_at'],
-            },
-        ),
-        migrations.CreateModel(
-            name='Comment',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('content', models.TextField(help_text='Content of the comment.')),
-                ('created_at', models.DateTimeField(auto_now_add=True, help_text='Timestamp when the comment was created.')),
-                ('updated_at', models.DateTimeField(auto_now=True, help_text='Timestamp when the comment was last updated.')),
-                ('author', models.ForeignKey(help_text='The user who created this comment.', on_delete=django.db.models.deletion.CASCADE, related_name='authored_comments', to=settings.AUTH_USER_MODEL)),
-                ('post', models.ForeignKey(help_text='The post this comment belongs to.', on_delete=django.db.models.deletion.CASCADE, related_name='comments', to='core.feedpost')),
-            ],
-            options={
-                'ordering': ['created_at'],
-            },
-        ),
-        migrations.CreateModel(
-            name='KnowledgeHub',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(help_text='Title of the knowledge hub.', max_length=255)),
-                ('prompt', models.TextField(help_text='The prompt for students to provide feedback on.')),
-                ('status', models.CharField(choices=[('public', 'Public'), ('private', 'Private')], default='public', help_text='Visibility status of the knowledge hub (public or private).', max_length=10)),
-                ('created_at', models.DateTimeField(auto_now_add=True, help_text='Timestamp when the hub was created.')),
-                ('updated_at', models.DateTimeField(auto_now=True, help_text='Timestamp when the hub was last updated.')),
-                ('teacher', models.ForeignKey(help_text='The teacher who created this knowledge hub.', limit_choices_to={'user_type': 'teacher'}, on_delete=django.db.models.deletion.CASCADE, related_name='created_hubs', to=settings.AUTH_USER_MODEL)),
-            ],
-            options={
-                'verbose_name_plural': 'Knowledge Hubs',
-            },
-        ),
-        migrations.CreateModel(
-            name='KnowledgeHubFeedback',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('content', models.TextField(help_text='The constructive feedback provided by the student.')),
-                ('created_at', models.DateTimeField(auto_now_add=True, help_text='Timestamp when the feedback was provided.')),
-                ('updated_at', models.DateTimeField(auto_now=True, help_text='Timestamp when the feedback was last updated.')),
-                ('hub', models.ForeignKey(help_text='The knowledge hub this feedback belongs to.', on_delete=django.db.models.deletion.CASCADE, related_name='feedbacks', to='core.knowledgehub')),
-                ('student', models.ForeignKey(help_text='The student who provided this feedback.', limit_choices_to={'user_type': 'student'}, on_delete=django.db.models.deletion.CASCADE, related_name='hub_feedbacks', to=settings.AUTH_USER_MODEL)),
-            ],
-            options={
-                'ordering': ['created_at'],
-                'unique_together': {('hub', 'student')},
-            },
-        ),
-        migrations.CreateModel(
-            name='Message',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('content', models.TextField(help_text='Content of the message.')),
-                ('timestamp', models.DateTimeField(auto_now_add=True, help_text='Timestamp when the message was sent.')),
-                ('conversation', models.ForeignKey(help_text='The conversation this message belongs to.', on_delete=django.db.models.deletion.CASCADE, related_name='messages', to='core.conversation')),
-                ('sender', models.ForeignKey(help_text='The user who sent this message.', on_delete=django.db.models.deletion.CASCADE, related_name='sent_messages', to=settings.AUTH_USER_MODEL)),
-            ],
-            options={
-                'verbose_name': 'Message',
-                'verbose_name_plural': 'Messages',
-                'ordering': ['timestamp'],
+                "verbose_name": "Conversation Participant",
+                "verbose_name_plural": "Conversation Participants",
             },
         ),
         migrations.AddField(
-            model_name='conversationparticipant',
-            name='last_read_message',
-            field=models.ForeignKey(blank=True, help_text='The last message read by this participant in this conversation.', null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='read_by_participants', to='core.message'),
+            model_name="conversation",
+            name="participants",
+            field=models.ManyToManyField(
+                help_text="Users participating in this conversation.",
+                related_name="conversations",
+                through="core.ConversationParticipant",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
         migrations.CreateModel(
-            name='Question',
+            name="FeedPost",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(help_text='Title of the question.', max_length=255)),
-                ('content', models.TextField(help_text='Detailed content of the question.')),
-                ('created_at', models.DateTimeField(auto_now_add=True, help_text='Timestamp when the question was created.')),
-                ('updated_at', models.DateTimeField(auto_now=True, help_text='Timestamp when the question was last updated.')),
-                ('is_resolved', models.BooleanField(default=False, help_text='Indicates if the question has been resolved.')),
-                ('author', models.ForeignKey(help_text='The user who asked this question.', on_delete=django.db.models.deletion.CASCADE, related_name='authored_questions', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "title",
+                    models.CharField(
+                        help_text="Title of the feed post.", max_length=255
+                    ),
+                ),
+                ("content", models.TextField(help_text="Content of the feed post.")),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        help_text="Timestamp when the post was created.",
+                    ),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(
+                        auto_now=True,
+                        help_text="Timestamp when the post was last updated.",
+                    ),
+                ),
+                (
+                    "author",
+                    models.ForeignKey(
+                        help_text="The user (admin or teacher) who created this post.",
+                        limit_choices_to={"user_type__in": ["admin", "teacher"]},
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="authored_posts",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'ordering': ['-created_at'],
+                "ordering": ["-created_at"],
             },
         ),
         migrations.CreateModel(
-            name='Answer',
+            name="Comment",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('content', models.TextField(help_text='Content of the answer.')),
-                ('created_at', models.DateTimeField(auto_now_add=True, help_text='Timestamp when the answer was created.')),
-                ('updated_at', models.DateTimeField(auto_now=True, help_text='Timestamp when the answer was last updated.')),
-                ('is_accepted', models.BooleanField(default=False, help_text='Indicates if this is the accepted answer for the question.')),
-                ('author', models.ForeignKey(help_text='The user who provided this answer.', on_delete=django.db.models.deletion.CASCADE, related_name='authored_answers', to=settings.AUTH_USER_MODEL)),
-                ('question', models.ForeignKey(help_text='The question this answer belongs to.', on_delete=django.db.models.deletion.CASCADE, related_name='answers', to='core.question')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("content", models.TextField(help_text="Content of the comment.")),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        help_text="Timestamp when the comment was created.",
+                    ),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(
+                        auto_now=True,
+                        help_text="Timestamp when the comment was last updated.",
+                    ),
+                ),
+                (
+                    "author",
+                    models.ForeignKey(
+                        help_text="The user who created this comment.",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="authored_comments",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "post",
+                    models.ForeignKey(
+                        help_text="The post this comment belongs to.",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="comments",
+                        to="core.feedpost",
+                    ),
+                ),
             ],
             options={
-                'ordering': ['created_at'],
+                "ordering": ["created_at"],
             },
         ),
         migrations.CreateModel(
-            name='Space',
+            name="KnowledgeHub",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(help_text='Name of the space.', max_length=100, unique=True)),
-                ('description', models.TextField(blank=True, help_text='Description of the space.')),
-                ('created_at', models.DateTimeField(auto_now_add=True, help_text='Timestamp when the space was created.')),
-                ('admin', models.ForeignKey(help_text='The administrator who created and manages this space.', limit_choices_to={'user_type': 'admin'}, on_delete=django.db.models.deletion.PROTECT, related_name='managed_spaces', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "title",
+                    models.CharField(
+                        help_text="Title of the knowledge hub.", max_length=255
+                    ),
+                ),
+                (
+                    "prompt",
+                    models.TextField(
+                        help_text="The prompt for students to provide feedback on."
+                    ),
+                ),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[("public", "Public"), ("private", "Private")],
+                        default="public",
+                        help_text="Visibility status of the knowledge hub (public or private).",
+                        max_length=10,
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        help_text="Timestamp when the hub was created.",
+                    ),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(
+                        auto_now=True,
+                        help_text="Timestamp when the hub was last updated.",
+                    ),
+                ),
+                (
+                    "teacher",
+                    models.ForeignKey(
+                        help_text="The teacher who created this knowledge hub.",
+                        limit_choices_to={"user_type": "teacher"},
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="created_hubs",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'verbose_name_plural': 'Spaces',
+                "verbose_name_plural": "Knowledge Hubs",
+            },
+        ),
+        migrations.CreateModel(
+            name="KnowledgeHubFeedback",
+            fields=[
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "content",
+                    models.TextField(
+                        help_text="The constructive feedback provided by the student."
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        help_text="Timestamp when the feedback was provided.",
+                    ),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(
+                        auto_now=True,
+                        help_text="Timestamp when the feedback was last updated.",
+                    ),
+                ),
+                (
+                    "hub",
+                    models.ForeignKey(
+                        help_text="The knowledge hub this feedback belongs to.",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="feedbacks",
+                        to="core.knowledgehub",
+                    ),
+                ),
+                (
+                    "student",
+                    models.ForeignKey(
+                        help_text="The student who provided this feedback.",
+                        limit_choices_to={"user_type": "student"},
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="hub_feedbacks",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+            ],
+            options={
+                "ordering": ["created_at"],
+                "unique_together": {("hub", "student")},
+            },
+        ),
+        migrations.CreateModel(
+            name="Message",
+            fields=[
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("content", models.TextField(help_text="Content of the message.")),
+                (
+                    "timestamp",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        help_text="Timestamp when the message was sent.",
+                    ),
+                ),
+                (
+                    "conversation",
+                    models.ForeignKey(
+                        help_text="The conversation this message belongs to.",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="messages",
+                        to="core.conversation",
+                    ),
+                ),
+                (
+                    "sender",
+                    models.ForeignKey(
+                        help_text="The user who sent this message.",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="sent_messages",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+            ],
+            options={
+                "verbose_name": "Message",
+                "verbose_name_plural": "Messages",
+                "ordering": ["timestamp"],
             },
         ),
         migrations.AddField(
-            model_name='question',
-            name='space',
-            field=models.ForeignKey(help_text='The space this question belongs to.', on_delete=django.db.models.deletion.CASCADE, related_name='questions', to='core.space'),
-        ),
-        migrations.AddField(
-            model_name='knowledgehub',
-            name='space',
-            field=models.ForeignKey(blank=True, help_text='The space this hub is associated with (required for private hubs).', null=True, on_delete=django.db.models.deletion.CASCADE, related_name='knowledge_hubs', to='core.space'),
-        ),
-        migrations.AddField(
-            model_name='feedpost',
-            name='space',
-            field=models.ForeignKey(blank=True, help_text='The space this post belongs to (optional, for global posts).', null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='space_posts', to='core.space'),
+            model_name="conversationparticipant",
+            name="last_read_message",
+            field=models.ForeignKey(
+                blank=True,
+                help_text="The last message read by this participant in this conversation.",
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="read_by_participants",
+                to="core.message",
+            ),
         ),
         migrations.CreateModel(
-            name='SpaceMembership',
+            name="Question",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('joined_at', models.DateTimeField(auto_now_add=True, help_text='Timestamp when the user joined the space.')),
-                ('space', models.ForeignKey(help_text='The space this user is a member of.', on_delete=django.db.models.deletion.CASCADE, related_name='memberships', to='core.space')),
-                ('user', models.OneToOneField(help_text='The user (student or teacher) who is a member of this space.', on_delete=django.db.models.deletion.CASCADE, related_name='space_membership', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "title",
+                    models.CharField(
+                        help_text="Title of the question.", max_length=255
+                    ),
+                ),
+                (
+                    "content",
+                    models.TextField(help_text="Detailed content of the question."),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        help_text="Timestamp when the question was created.",
+                    ),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(
+                        auto_now=True,
+                        help_text="Timestamp when the question was last updated.",
+                    ),
+                ),
+                (
+                    "is_resolved",
+                    models.BooleanField(
+                        default=False,
+                        help_text="Indicates if the question has been resolved.",
+                    ),
+                ),
+                (
+                    "author",
+                    models.ForeignKey(
+                        help_text="The user who asked this question.",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="authored_questions",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+            ],
+            options={
+                "ordering": ["-created_at"],
+            },
+        ),
+        migrations.CreateModel(
+            name="Answer",
+            fields=[
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("content", models.TextField(help_text="Content of the answer.")),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        help_text="Timestamp when the answer was created.",
+                    ),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(
+                        auto_now=True,
+                        help_text="Timestamp when the answer was last updated.",
+                    ),
+                ),
+                (
+                    "is_accepted",
+                    models.BooleanField(
+                        default=False,
+                        help_text="Indicates if this is the accepted answer for the question.",
+                    ),
+                ),
+                (
+                    "author",
+                    models.ForeignKey(
+                        help_text="The user who provided this answer.",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="authored_answers",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "question",
+                    models.ForeignKey(
+                        help_text="The question this answer belongs to.",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="answers",
+                        to="core.question",
+                    ),
+                ),
+            ],
+            options={
+                "ordering": ["created_at"],
+            },
+        ),
+        migrations.CreateModel(
+            name="Space",
+            fields=[
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "name",
+                    models.CharField(
+                        help_text="Name of the space.", max_length=100, unique=True
+                    ),
+                ),
+                (
+                    "description",
+                    models.TextField(blank=True, help_text="Description of the space."),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        help_text="Timestamp when the space was created.",
+                    ),
+                ),
+                (
+                    "admin",
+                    models.ForeignKey(
+                        help_text="The administrator who created and manages this space.",
+                        limit_choices_to={"user_type": "admin"},
+                        on_delete=django.db.models.deletion.PROTECT,
+                        related_name="managed_spaces",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+            ],
+            options={
+                "verbose_name_plural": "Spaces",
+            },
+        ),
+        migrations.AddField(
+            model_name="question",
+            name="space",
+            field=models.ForeignKey(
+                help_text="The space this question belongs to.",
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="questions",
+                to="core.space",
+            ),
+        ),
+        migrations.AddField(
+            model_name="knowledgehub",
+            name="space",
+            field=models.ForeignKey(
+                blank=True,
+                help_text="The space this hub is associated with (required for private hubs).",
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="knowledge_hubs",
+                to="core.space",
+            ),
+        ),
+        migrations.AddField(
+            model_name="feedpost",
+            name="space",
+            field=models.ForeignKey(
+                blank=True,
+                help_text="The space this post belongs to (optional, for global posts).",
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="space_posts",
+                to="core.space",
+            ),
+        ),
+        migrations.CreateModel(
+            name="SpaceMembership",
+            fields=[
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "joined_at",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        help_text="Timestamp when the user joined the space.",
+                    ),
+                ),
+                (
+                    "space",
+                    models.ForeignKey(
+                        help_text="The space this user is a member of.",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="memberships",
+                        to="core.space",
+                    ),
+                ),
+                (
+                    "user",
+                    models.OneToOneField(
+                        help_text="The user (student or teacher) who is a member of this space.",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="space_membership",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.AlterUniqueTogether(
-            name='conversationparticipant',
-            unique_together={('conversation', 'user')},
+            name="conversationparticipant",
+            unique_together={("conversation", "user")},
         ),
         migrations.CreateModel(
-            name='PeerReview',
+            name="PeerReview",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('review_content', models.TextField(help_text='The content of the peer review.')),
-                ('rating', models.IntegerField(blank=True, help_text='Optional rating for the feedback (e.g., 1-5 stars).', null=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True, help_text='Timestamp when the review was created.')),
-                ('feedback_to_review', models.ForeignKey(help_text='The specific knowledge hub feedback being reviewed.', on_delete=django.db.models.deletion.CASCADE, related_name='peer_reviews', to='core.knowledgehubfeedback')),
-                ('reviewer', models.ForeignKey(help_text='The student who is providing the review.', limit_choices_to={'user_type': 'student'}, on_delete=django.db.models.deletion.CASCADE, related_name='given_peer_reviews', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "review_content",
+                    models.TextField(help_text="The content of the peer review."),
+                ),
+                (
+                    "rating",
+                    models.IntegerField(
+                        blank=True,
+                        help_text="Optional rating for the feedback (e.g., 1-5 stars).",
+                        null=True,
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        help_text="Timestamp when the review was created.",
+                    ),
+                ),
+                (
+                    "feedback_to_review",
+                    models.ForeignKey(
+                        help_text="The specific knowledge hub feedback being reviewed.",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="peer_reviews",
+                        to="core.knowledgehubfeedback",
+                    ),
+                ),
+                (
+                    "reviewer",
+                    models.ForeignKey(
+                        help_text="The student who is providing the review.",
+                        limit_choices_to={"user_type": "student"},
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="given_peer_reviews",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'unique_together': {('reviewer', 'feedback_to_review')},
+                "unique_together": {("reviewer", "feedback_to_review")},
             },
         ),
         migrations.AddConstraint(
-            model_name='knowledgehub',
-            constraint=models.CheckConstraint(condition=models.Q(('status', 'public'), ('space__isnull', False), _connector='OR'), name='private_hub_must_have_space'),
+            model_name="knowledgehub",
+            constraint=models.CheckConstraint(
+                condition=models.Q(
+                    ("status", "public"), ("space__isnull", False), _connector="OR"
+                ),
+                name="private_hub_must_have_space",
+            ),
         ),
         migrations.AlterUniqueTogether(
-            name='spacemembership',
-            unique_together={('user', 'space')},
+            name="spacemembership",
+            unique_together={("user", "space")},
         ),
     ]

@@ -6,13 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('core', '0006_comment_upvoters_alter_question_anticipators'),
+        ("core", "0006_comment_upvoters_alter_question_anticipators"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='space',
-            name='space_profile',
-            field=models.ImageField(blank=True, help_text='Optional profile picture for the space.', null=True, upload_to='space_profiles/'),
+            model_name="space",
+            name="space_profile",
+            field=models.ImageField(
+                blank=True,
+                help_text="Optional profile picture for the space.",
+                null=True,
+                upload_to="space_profiles/",
+            ),
         ),
     ]

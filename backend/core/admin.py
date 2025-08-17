@@ -16,18 +16,20 @@ from .models import (
 )
 
 # Register all models
-admin.site.register([
-    Space,
-    SpaceMembership,
-    FeedPost,
-    Comment,
-    Question,
-    Answer,
-    KnowledgeHub,
-    KnowledgeHubFeedback,
-    PeerReview,
-    Conversation,
-    ConversationParticipant,
-    Message,
-    SpaceCategory,
-])
+admin.site.register(
+    [
+        Space,
+        SpaceMembership,
+        FeedPost,
+        Comment,
+        Question,
+        Answer,
+        KnowledgeHub,
+        KnowledgeHubFeedback,
+        PeerReview,
+        Conversation,
+        ConversationParticipant,
+        Message,
+        SpaceCategory,
+    ]
+)
