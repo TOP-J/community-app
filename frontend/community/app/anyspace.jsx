@@ -149,7 +149,11 @@ export default function AnySpace() {
 
       {/* Loading or Space Details */}
       {loading && activeTab === "Questions" ? (
-        <ActivityIndicator size="large" color="green" style={{ marginTop: 20 }} />
+        <ActivityIndicator
+          size="large"
+          color="green"
+          style={{ marginTop: 20 }}
+        />
       ) : space ? (
         <View style={styles.spaceDetails}>
           {/* Background image with back button */}
@@ -205,11 +209,17 @@ export default function AnySpace() {
       )}
 
       {/* Navigation Tabs */}
+      <View style={styles.stickyNavbar}>
       <SpaceNavigationBar activeTab={activeTab} onTabChange={setActiveTab} />
+      </View>
 
       {/* Loading indicator for non-Questions tabs */}
       {loading && activeTab !== "Questions" && (
-        <ActivityIndicator size="large" color="green" style={{ marginTop: 20 }} />
+        <ActivityIndicator
+          size="large"
+          color="green"
+          style={{ marginTop: 20 }}
+        />
       )}
     </>
   );
@@ -224,8 +234,7 @@ export default function AnySpace() {
         keyExtractor={(item) => item.id.toString()}
         renderItem={renderItem}
         ListHeaderComponent={ListHeaderComponent}
-        stickyHeaderIndices={[6]} // Adjust index to the tab bar in the header components
-        // You may adjust this index if you add/remove components above the tab bar
+        stickyHeaderIndices={[]} 
       />
 
       <ProfileSidebar

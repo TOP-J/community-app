@@ -1,6 +1,8 @@
 django
-spycopg3
+psycopg
 python-dotenv
 pillow
 djangorestframework
 djoser
+daphne
+autobahn

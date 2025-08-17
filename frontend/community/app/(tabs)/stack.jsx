@@ -96,7 +96,7 @@ export default function StackScreen() {
           <TouchableOpacity style={styles.profileButton} onPress={openSidebar}>
             <CircleUserRound size={28} color="green" />
           </TouchableOpacity>
-        
+
           <Text style={styles.feedTitle}>Stack</Text>
         </View>
 

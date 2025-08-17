@@ -6,12 +6,13 @@ load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv('SECRET_KEY')
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['localhost', '192.168.8.102']
+ALLOWED_HOSTS = ['localhost', '192.168.8.102','192.168.8.102']
 
 # --- Installed apps ---
 INSTALLED_APPS = [
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -54,6 +55,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'community.wsgi.application'
+ASGI_APPLICATION = "myproject.asgi.peerUppApp"
 
 # --- Database (PostgreSQL) ---
 DATABASES = {
@@ -125,3 +127,6 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # --- Default Auto Field ---
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+#django deployment setti8ngs for asgi sever
+ADMINS = [('BABA-J', os.getenv('ADMIN_EMAIL'))]

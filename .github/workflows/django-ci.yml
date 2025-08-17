@@ -1,0 +1,63 @@
+# .github/workflows/django-ci.yml
+
+name: Django CI
+
+# This workflow runs on pushes and pull requests to a few key branches.
+# It ensures that all code merged into 'develop' or 'main' is tested.
+on:
+  push:
+    branches:
+      - develop
+      - main
+  pull_request:
+    branches:
+      - develop
+      - main
+      - 'feature/**'
+      - 'bugfix/**'
+
+jobs:
+  build:
+    # Use a Linux runner for the job
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        # Use your desired Python version
+        python-version: '3.11' 
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        # Install testing, linting, and security tools
+        pip install -r backend/requirements.txt flake8 bandit mypy
+
+    - name: Run Linting (Flake8)
+      # Checks for PEP 8 style guide violations and other common errors
+      run: |
+        flake8 .
+
+    - name: Run Static Analysis (Bandit)
+      # Scans the project for common security vulnerabilities
+      run: |
+        bandit -r .
+
+    - name: Run Type Checking (Mypy)
+      # Checks your code for type inconsistencies (if you use type hints)
+      run: |
+        mypy .
+
+    - name: Run Django tests
+      # This step runs the entire Django test suite.
+      # Replace 'myproject' with the name of your Django project.
+      run: |
+        python manage.py test
+      env:
+        # Use a dummy settings module for testing if you have one,
+        # otherwise use your main settings file.
+        DJANGO_SETTINGS_MODULE: community.settings

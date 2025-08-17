@@ -49,9 +49,9 @@ export function Post({ post }) {
         postId={post.id}
         initialLikes={post.like_count}
         initialShares={post.share_count}
-        initialLiked={post.is_liked} // if you track if current user liked already
-        initialShared={post.is_shared} // if you track this
-        space={post.space} // null if global post, object if space post
+        initialLiked={post.is_liked} 
+        initialShared={post.is_shared}
+        space={post.space} 
       />
     </View>
   );
