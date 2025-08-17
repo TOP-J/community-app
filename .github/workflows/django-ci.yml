@@ -60,4 +60,4 @@ jobs:
       env:
         # Use a dummy settings module for testing if you have one,
         # otherwise use your main settings file.
-        DJANGO_SETTINGS_MODULE: myproject.settings
+        DJANGO_SETTINGS_MODULE: community.settings
