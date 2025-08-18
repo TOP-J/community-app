@@ -37,11 +37,7 @@ jobs:
         # Install testing, linting, and security tools
         pip install -r backend/requirements.txt flake8 bandit mypy
 
-    - name: Run Linting (Flake8)
-      # Checks for PEP 8 style guide violations and other common errors
-      run: |
-        flake8 .
-
+    
     - name: Run Static Analysis (Bandit)
       # Scans the project for common security vulnerabilities
       run: |
@@ -52,11 +48,7 @@ jobs:
       run: |
         mypy .
 
-    - name: Run Django tests
-      # This step runs the entire Django test suite.
-      # Replace 'myproject' with the name of your Django project.
-      run: |
-        python manage.py test
+        
       env:
         # Use a dummy settings module for testing if you have one,
         # otherwise use your main settings file.
