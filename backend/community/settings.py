@@ -8,7 +8,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '192.168.8.102']
+ALLOWED_HOSTS = ['localhost', 'babaj237.pythonanywhere.com']
 
 # --- Installed apps ---
 INSTALLED_APPS = [
