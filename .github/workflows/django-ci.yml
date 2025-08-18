@@ -37,7 +37,6 @@ jobs:
         # Install testing, linting, and security tools
         pip install -r backend/requirements.txt flake8 bandit mypy
 
-    
     - name: Run Static Analysis (Bandit)
       # Scans the project for common security vulnerabilities
       run: |
