@@ -5,7 +5,6 @@
 **.idea/
 **.vscode/
 **.expo/
-backend/media/
 backend/venv/
 frontend/python-client/
 frontend/community/app-example
