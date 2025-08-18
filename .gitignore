@@ -12,3 +12,4 @@ frontend/community/app-example
 frontend/community/.git
 **/node_modules/
 frontend/community/.gitignore
+frontend/
